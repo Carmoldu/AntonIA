@@ -1,6 +1,6 @@
 from AntonIA.common.logger_setup import setup_logging
 from AntonIA.services.llm_client import OpenAIClient, MockAIClient
-from AntonIA.core import prompt_generator
+from AntonIA.core import prompt_generator, image_generator
 
 
 def main():
@@ -14,6 +14,7 @@ def main():
             """
     )
     prompt_for_image_generation, response_details = prompt_generator.generate(llm_client)
+    image_path = image_generator.generate(prompt_for_image_generation, size="1024x1024")
 
     
 
