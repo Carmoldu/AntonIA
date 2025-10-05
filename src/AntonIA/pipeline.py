@@ -5,7 +5,7 @@ from AntonIA.core import phrase_generator
 
 def main():
     logger = setup_logging()
-    llm_client = MockAIClient()
+    llm_client = OpenAIClient()
     phrase = phrase_generator.generate(llm_client)
     
 
