@@ -26,7 +26,7 @@ class ImageGenerationClient(Protocol):
         pass
 
 class ImageGenerationClient:
-    def __init__(self, model: str = "gpt-image-1", output_dir: str = "./outputs/images"):
+    def __init__(self, model: str = "gpt-image-1"):
         """
         Initialize the image generation client.
 
@@ -36,7 +36,6 @@ class ImageGenerationClient:
         """
         self.client = OpenAI(api_key=config.openai_api_key)
         self.model = model
-        self.output_dir = Path(output_dir)
 
     def generate_image(
             self, 
@@ -71,18 +70,7 @@ class ImageGenerationClient:
             )
 
             image_base64 = result.data[0].b64_json
-            image_bytes = bytes.fromhex("") if not image_base64 else image_base64.encode("utf-8")
-
-            # Decode base64 properly
-            image_data = base64.b64decode(image_base64)
-            
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            image_path = self.output_dir / f"image_{timestamp}_{hash(prompt) & 0xFFFFFFFF}.png"
-            with open(image_path, "wb") as f:
-                f.write(image_data)
-
-            logger.info(f"Image saved to {image_path}")
-            return image_path
+            return base64.b64decode(image_base64)
 
         except Exception as e:
             logger.exception("Failed to generate image")

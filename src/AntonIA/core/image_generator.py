@@ -12,7 +12,7 @@ from ..services.image_generation_client import ImageGenerationClient
 logger = getLogger("AntonIA.image_generator")
 
 
-def generate(prompt: str, size: str = "1024x1024") -> Path:
+def generate(client: ImageGenerationClient, prompt: str, size: str = "1024x1024") -> Path:
     """
     Generate an image given a prompt.
 
@@ -25,8 +25,7 @@ def generate(prompt: str, size: str = "1024x1024") -> Path:
     """
     logger.info("Starting image generation process...")
 
-    client = ImageGenerationClient()
     image_path = client.generate_image(prompt, size)
 
-    logger.info(f"Image generated successfully: {image_path}")
+    logger.info(f"Image generated successfully")
     return image_path
