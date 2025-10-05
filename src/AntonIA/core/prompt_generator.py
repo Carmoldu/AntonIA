@@ -81,7 +81,7 @@ def generate_prompt(parsed_response: dict[str, str]) -> str:
 
     return prompt
 
-def generate(llm_client: LLMClient) -> tuple[str, dict]:
+def generate(llm_client: LLMClient, temperature: float = 0.8) -> tuple[str, dict]:
     """
     Main function to generate the morning phrase and image prompt.
     Args:
@@ -91,7 +91,7 @@ def generate(llm_client: LLMClient) -> tuple[str, dict]:
     """
     day_of_the_week = get_day_of_week()
     prompt = build_prompt(day_of_the_week)
-    response = query_llm(llm_client, prompt)
+    response = query_llm(llm_client, prompt, temperature)
     parsed_response = parse_response(response)
     image_prompt = generate_prompt(parsed_response)
     return image_prompt, parsed_response

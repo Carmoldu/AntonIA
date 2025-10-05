@@ -1,8 +1,11 @@
 from AntonIA.common.logger_setup import setup_logging
-from AntonIA.services.llm_client import OpenAIClient, MockAIClient
-from AntonIA.services.storage_client import LocalStorageClient
-from AntonIA.services.image_generation_client import ImageGenerationClient
-from AntonIA.core import image_saver, prompt_generator, image_generator
+from AntonIA.services import (
+    OpenAIClient,
+    MockAIClient,
+    LocalStorageClient,
+    ImageGenerationClient,
+)
+from AntonIA.core import image_saver, prompt_generator, image_generator, instagram_caption_generator
 
 
 def main():
@@ -18,7 +21,14 @@ def main():
     image_generator_client = ImageGenerationClient(model="gpt-image-1")
     storage_client = LocalStorageClient(base_dir="./outputs/images")
 
-    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client)
+    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client, temperature=0.4)
+    
+    caption = instagram_caption_generator.generate(
+        llm_client, 
+        phrase=response_details["phrase"], 
+        topic=response_details["topic"], 
+        style=response_details["style"], 
+    )
     image_bytes = image_generator.generate(image_generator_client, prompt_for_image_generation, size="1024x1024")
     saved_image_path = image_saver.save(image_bytes, storage_client)
 

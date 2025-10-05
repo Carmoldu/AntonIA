@@ -48,7 +48,7 @@ class OpenAIClient:
         )
         return response.choices[0].message.content
 
-def query_llm(llm_client: LLMClient, prompt: str) -> str:
+def query_llm(llm_client: LLMClient, prompt: str, temperature: float = 0.8) -> str:
     """
     Generates a good morning phrase based on the day of the week.
 
@@ -60,7 +60,7 @@ def query_llm(llm_client: LLMClient, prompt: str) -> str:
     """
     logger.info("Querying LLM...")
     try:
-        response = llm_client.generate_text(prompt)
+        response = llm_client.generate_text(prompt, temperature=temperature)
         logger.info(f"LLM response: {response}")
         return response
     except Exception as e:
