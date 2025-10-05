@@ -13,8 +13,8 @@ def main():
             of AI image generation prompting.
             """
     )
-    phrase = prompt_generator.generate(llm_client)
-    
+    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client)
+
     
 
 if __name__ == "__main__":

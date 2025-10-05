@@ -5,6 +5,7 @@ Wrapper around APIs for text generation.
 """
 
 import os
+from logging import getLogger
 from typing import Protocol
 
 from openai import OpenAI
@@ -12,6 +13,8 @@ from openai import OpenAI
 from AntonIA.common.config import config
 
 
+
+logger = getLogger("AntonIA.llm_client")
 
 class LLMClient(Protocol):
     def generate_text(self, prompt: str, temperature: float = 0.8) -> str:
@@ -44,3 +47,23 @@ class OpenAIClient:
             max_tokens=1000,
         )
         return response.choices[0].message.content
+
+def query_llm(llm_client: LLMClient, prompt: str) -> str:
+    """
+    Generates a good morning phrase based on the day of the week.
+
+    Args:
+        llm_client: instance of the LLMClient abstraction (e.g., OpenAI, Anthropic, etc.)
+        prompt: text prompt to send to the LLM
+    Returns:
+        str: response of the LLM
+    """
+    logger.info("Querying LLM...")
+    try:
+        response = llm_client.generate_text(prompt)
+        logger.info(f"LLM response: {response}")
+        return response
+    except Exception as e:
+        logger.exception("Error querying LLM.")
+        raise RuntimeError("Failed to query the LLM.") from e
+    
