@@ -14,13 +14,13 @@ def _utcnow_iso() -> datetime:
 
 @dataclass
 class RunInfo:
-    timestamp: datetime = field(default_factory=_utcnow_iso)
     prompt: str
     phrase: str
     topic: str
     style: str
     caption: str
     image_path: str
+    timestamp: datetime = field(default_factory=_utcnow_iso)
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
