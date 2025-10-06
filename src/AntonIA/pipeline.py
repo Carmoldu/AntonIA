@@ -5,11 +5,20 @@ from AntonIA.services import (
     OpenAIimageGenerationClient, MockImageGenerationClient,
     LocalFileDatabaseClient, MockDatabaseClient,
 )
-from AntonIA.core import image_saver, prompt_generator, image_generator, instagram_caption_generator, run_info_saver
+from AntonIA.core import (
+    image_saver,
+    prompt_generator,
+    image_generator,
+    instagram_caption_generator,
+    run_info_saver,
+    retrieve_past_records,
+)
 
 
 def main():
     logger = setup_logging()
+
+    # Set up clients
     llm_client_1 = OpenAIClient(
         system_prompt="""
             You are a grandma obsessed with good-morning images. 
@@ -21,15 +30,19 @@ def main():
     llm_client_2 = llm_client_1  # Using the same LLM client for both tasks, set up like this for easy swapping with MockAIClient
     image_generator_client = OpenAIimageGenerationClient(model="gpt-image-1")
     storage_client = LocalStorageClient(base_dir="./outputs/images")
+    database_client = LocalFileDatabaseClient(db_path="./outputs/database")
 
     # llm_client_1 = MockAIClient(response='{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}')
     # llm_client_2 = MockAIClient(response="This is a caption")
     # image_generator_client = MockImageGenerationClient()
     # storage_client = MockStorageClient()
+    # database_client = MockDatabaseClient()
 
-    database_client = LocalFileDatabaseClient(db_path="./outputs/database")
 
-    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client_1, temperature=0.4)
+    # Pipeline execution
+    past_records = retrieve_past_records.retrieve_past_n_days(database_client, "antonIA_runs", n_days=10)
+
+    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client_1, past_records, temperature=0.4)
     
     caption = instagram_caption_generator.generate(
         llm_client_2, 

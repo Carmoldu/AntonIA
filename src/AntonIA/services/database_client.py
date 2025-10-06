@@ -15,6 +15,13 @@ class DatabaseClient(Protocol):
         """Save a record to the specified table in the database."""
         pass
 
+    def get_all_records(self, table: str) -> pd.DataFrame:
+        """Retrieve all records from the specified table in the database."""
+        pass
+
+    def get_records_matching_query(self, table: str, query: str) -> pd.DataFrame:
+        """Retrieve records matching a specific query from the specified table in the database."""
+        pass
 
 class MockDatabaseClient:
     """
@@ -32,6 +39,23 @@ class MockDatabaseClient:
         self.saved_records += 1
         logger.debug(f"[MOCK] Record saved to '{table}' (total: {len(self.tables[table])})")
 
+    def get_all_records(self, table: str) -> pd.DataFrame:
+        if table in self.tables:
+            return pd.DataFrame(self.tables[table])
+        else:
+            logger.debug(f"[MOCK] Table '{table}' does not exist.")
+            return pd.DataFrame()  # Return empty DataFrame if table doesn't exist
+        
+    def get_records_matching_query(self, table: str, query: str) -> pd.DataFrame:
+        df = self.get_all_records(table)
+        if df.empty:
+            return df
+        try:
+            filtered_df = df.query(query)
+            return filtered_df
+        except Exception as e:
+            logger.error(f"[MOCK] Error querying table '{table}': {e}")
+            return pd.DataFrame()  # Return empty DataFrame on error
 
 
 class LocalFileDatabaseClient:
@@ -55,3 +79,24 @@ class LocalFileDatabaseClient:
         
         df.to_parquet(f"{self.db_path}/{table}.parquet", index=False)
         logger.info(f"Record saved to {table} table.")
+
+    def get_all_records(self, table: str) -> pd.DataFrame:
+        """Retrieve all records from the specified table."""
+        try:
+            df = self.pd.read_parquet(f"{self.db_path}/{table}.parquet")
+            return df
+        except FileNotFoundError:
+            logger.warning(f"Table '{table}' does not exist.")
+            return self.pd.DataFrame()  # Return empty DataFrame if table doesn't exist
+        
+    def get_records_matching_query(self, table: str, query: str) -> pd.DataFrame:
+        """Retrieve records matching a specific query from the specified table."""
+        df = self.get_all_records(table)
+        if df.empty:
+            return df
+        try:
+            filtered_df = df.query(query)
+            return filtered_df
+        except Exception as e:
+            logger.error(f"Error querying table '{table}': {e}")
+            raise Exception(f"Error querying table '{table}': {e}") from e

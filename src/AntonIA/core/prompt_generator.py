@@ -21,7 +21,7 @@ def get_day_of_week() -> str:
     return datetime.now().strftime("%A")
 
 
-def build_prompt(day_of_week: str) -> str:
+def build_prompt(day_of_week: str, past_records: str) -> str:
     """
     Builds the prompt to be sent to the LLM to generate a morning phrase.
     Args:
@@ -37,6 +37,8 @@ def build_prompt(day_of_week: str) -> str:
         "Also define a font or writing style in english for the phrase which goes along well with the image."
         "Respond in the following JSON format only, without any additional text:"
         "{'phrase': '...', 'topic': '...', 'style': '...', 'font': '...'}"
+        "Avoid overly used phrases, topics and styles from the past days: "
+        f"{past_records}"
     )
 
 def parse_response(response: str) -> dict[str, str]:
@@ -81,16 +83,18 @@ def generate_prompt(parsed_response: dict[str, str]) -> str:
 
     return prompt
 
-def generate(llm_client: LLMClient, temperature: float = 0.8) -> tuple[str, dict]:
+def generate(llm_client: LLMClient, past_records, temperature: float = 0.8) -> tuple[str, dict]:
     """
     Main function to generate the morning phrase and image prompt.
     Args:
         llm_client: instance of the LLMClient abstraction (e.g., OpenAI, Anthropic, etc.)
+        past_records: string summarizing past records to avoid repetition
+        temperature: sampling temperature for the LLM
     Returns:
         str: generated prompt for image generation
     """
     day_of_the_week = get_day_of_week()
-    prompt = build_prompt(day_of_the_week)
+    prompt = build_prompt(day_of_the_week, past_records)
     response = query_llm(llm_client, prompt, temperature)
     parsed_response = parse_response(response)
     image_prompt = generate_prompt(parsed_response)
