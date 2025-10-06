@@ -4,12 +4,14 @@ image_generation_client.py
 Abstraction layer for AI-based image generation services.
 Currently implemented for OpenAI's Images API.
 """
-
+import os
 import base64
 from datetime import datetime
 from pathlib import Path
 from logging import getLogger
 from typing import Protocol, Literal
+from PIL import Image
+import io
 
 from openai import OpenAI
 
@@ -25,7 +27,25 @@ class ImageGenerationClient(Protocol):
         """Generate an image from a textual prompt and return the path to the saved image."""
         pass
 
-class ImageGenerationClient:
+
+class MockImageGenerationClient:
+    def __init__(self):
+        """
+        Initialize a mock image generator.
+
+        """
+        # Create a simple 512x512 white image for testing
+        img = Image.new("RGB", (512, 512), color=(255, 255, 255))
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        self._default_image = buf.getvalue()
+
+    def generate_image(self, prompt: str, size: str = "1024x1024") -> bytes:
+        logger.info(f"Mock image generation for prompt: '{prompt}'")
+        return self._default_image
+    
+
+class OpenAIimageGenerationClient:
     def __init__(self, model: str = "gpt-image-1"):
         """
         Initialize the image generation client.

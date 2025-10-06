@@ -36,7 +36,7 @@ def build_prompt(day_of_week: str) -> str:
         "then propose a topic and style in english for an image to go alongside the phrase."
         "Also define a font or writing style in english for the phrase which goes along well with the image."
         "Respond in the following JSON format only, without any additional text:"
-        "{{'phrase': '...', 'topic': '...', 'style': '...', 'font': '...'}}"
+        "{'phrase': '...', 'topic': '...', 'style': '...', 'font': '...'}"
     )
 
 def parse_response(response: str) -> dict[str, str]:

@@ -1,17 +1,16 @@
 from AntonIA.common.logger_setup import setup_logging
 from AntonIA.services import (
-    OpenAIClient,
-    MockAIClient,
-    LocalStorageClient,
-    ImageGenerationClient,
-    LocalFileDatabaseClient,
+    OpenAIClient, MockAIClient,
+    LocalStorageClient, MockStorageClient,
+    OpenAIimageGenerationClient, MockImageGenerationClient,
+    LocalFileDatabaseClient, MockDatabaseClient,
 )
 from AntonIA.core import image_saver, prompt_generator, image_generator, instagram_caption_generator, run_info_saver
 
 
 def main():
     logger = setup_logging()
-    llm_client = OpenAIClient(
+    llm_client_1 = OpenAIClient(
         system_prompt="""
             You are a grandma obsessed with good-morning images. 
             Since you discovered AI image generators, you have mastered the 
@@ -19,14 +18,21 @@ def main():
             of AI image generation prompting.
             """
     )
-    image_generator_client = ImageGenerationClient(model="gpt-image-1")
+    llm_client_2 = llm_client_1  # Using the same LLM client for both tasks, set up like this for easy swapping with MockAIClient
+    image_generator_client = OpenAIimageGenerationClient(model="gpt-image-1")
     storage_client = LocalStorageClient(base_dir="./outputs/images")
+
+    # llm_client_1 = MockAIClient(response='{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}')
+    # llm_client_2 = MockAIClient(response="This is a caption")
+    # image_generator_client = MockImageGenerationClient()
+    # storage_client = MockStorageClient()
+
     database_client = LocalFileDatabaseClient(db_path="./outputs/database")
 
-    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client, temperature=0.4)
+    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client_1, temperature=0.4)
     
     caption = instagram_caption_generator.generate(
-        llm_client, 
+        llm_client_2, 
         phrase=response_details["phrase"], 
         topic=response_details["topic"], 
         style=response_details["style"], 
@@ -34,7 +40,7 @@ def main():
     image_bytes = image_generator.generate(image_generator_client, prompt_for_image_generation, size="1024x1024")
     saved_image_path = image_saver.save(image_bytes, storage_client)
 
-    run_info = run_info_saver.RunInfo.from_generation(
+    run_info = run_info_saver.RunInfo.from_generation_details(
         prompt=prompt_for_image_generation,
         response_details=response_details,
         caption=caption,

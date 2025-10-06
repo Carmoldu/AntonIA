@@ -23,9 +23,12 @@ class LLMClient(Protocol):
 
 
 class MockAIClient:
+    def __init__(self, response: str = "This is a mock response."):
+        self.response = response
+
     def generate_text(self, prompt: str, temperature: float = 0.8) -> str:
         """Mock implementation for testing purposes."""
-        return "This is a mock response."
+        return self.response
 
 
 class OpenAIClient:
@@ -66,4 +69,3 @@ def query_llm(llm_client: LLMClient, prompt: str, temperature: float = 0.8) -> s
     except Exception as e:
         logger.exception("Error querying LLM.")
         raise RuntimeError("Failed to query the LLM.") from e
-    

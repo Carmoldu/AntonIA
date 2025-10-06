@@ -16,6 +16,24 @@ class DatabaseClient(Protocol):
         pass
 
 
+class MockDatabaseClient:
+    """
+    Mock client to simulate database operations in memory.
+    Useful for testing pipelines without writing to disk.
+    """
+    def __init__(self):
+        self.tables = {}
+        self.saved_records = 0
+
+    def save_record(self, table: str, record: dict) -> None:
+        if table not in self.tables:
+            self.tables[table] = []
+        self.tables[table].append(record)
+        self.saved_records += 1
+        logger.debug(f"[MOCK] Record saved to '{table}' (total: {len(self.tables[table])})")
+
+
+
 class LocalFileDatabaseClient:
     def __init__(self, db_path: str):
         # Generate the database directory if it doesn't exist
