@@ -4,8 +4,9 @@ from AntonIA.services import (
     MockAIClient,
     LocalStorageClient,
     ImageGenerationClient,
+    LocalFileDatabaseClient,
 )
-from AntonIA.core import image_saver, prompt_generator, image_generator, instagram_caption_generator
+from AntonIA.core import image_saver, prompt_generator, image_generator, instagram_caption_generator, run_info_saver
 
 
 def main():
@@ -20,6 +21,7 @@ def main():
     )
     image_generator_client = ImageGenerationClient(model="gpt-image-1")
     storage_client = LocalStorageClient(base_dir="./outputs/images")
+    database_client = LocalFileDatabaseClient(db_path="./outputs/database")
 
     prompt_for_image_generation, response_details = prompt_generator.generate(llm_client, temperature=0.4)
     
@@ -31,6 +33,17 @@ def main():
     )
     image_bytes = image_generator.generate(image_generator_client, prompt_for_image_generation, size="1024x1024")
     saved_image_path = image_saver.save(image_bytes, storage_client)
+
+    run_info = run_info_saver.RunInfo.from_generation(
+        prompt=prompt_for_image_generation,
+        response_details=response_details,
+        caption=caption,
+        image_path=saved_image_path,
+    )
+
+    run_info_saver.save(database_client, "antonIA_runs", run_info)
+
+
 
     
 
