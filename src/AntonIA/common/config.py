@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Optional
 from dataclasses import dataclass
 from dotenv import load_dotenv
 import yaml
@@ -10,9 +11,19 @@ import yaml
 
 @dataclass
 class Config:
+    grandma_name:str
+    runs_table_name: str
     openai_api_key: str
-    model_name: str
-    watermark_path: str
+    llm_model: str
+    llm_system_prompt: str
+    prompt_creation_template: str
+    instagram_caption_template: str
+    image_model: str
+    image_size: str
+    image_storage_path: str
+    past_records_database_path: str
+    past_records_to_retrieve: int
+    watermark_path: Optional[str]
 
     @classmethod
     def from_sources(cls, config_path: str = "./config.yaml") -> Config:
@@ -30,10 +41,23 @@ class Config:
             with open(path, "r", encoding="utf-8") as f:
                 yaml_data = yaml.safe_load(f) or {}
 
+        # Compose some of the configs
+        runs_table_name = f"{yaml_data["GRANDMA_NAME"]}_runs"
+
         # 3. Merge environment variables (override YAML)
         merged = {
+            "grandma_name": yaml_data["GRANDMA_NAME"],
+            "runs_table_name": runs_table_name,
             "openai_api_key": os.getenv("OPENAI_API_KEY", None),
-            "model_name": yaml_data.get("MODEL_NAME", "gpt-5"),
+            "llm_model": yaml_data.get("LLM_MODEL", "gpt-4.1-nano"),
+            "llm_system_prompt": yaml_data.get("LLM_SYSTEM_PROMPT", ""),
+            "prompt_creation_template": yaml_data["PROMPT_CREATION_TEMPLATE"],
+            "instagram_caption_template": yaml_data["INSTAGRAM_CAPTION_TEMPLATE"],
+            "image_model": yaml_data.get("IMAGE_MODEL", "gpt-image-1"),
+            "image_size": yaml_data.get("IMAGE_SIZE", "1024x1024"),
+            "image_storage_path": yaml_data.get("IMAGE_STORAGE_PATH", "./outputs/images"),
+            "past_records_database_path": yaml_data["PAST_RECORDS_DATABASE_PATH"],
+            "past_records_to_retrieve": yaml_data.get("PAST_RECORDS_TO_RETRIEVE", 10),
             "watermark_path": yaml_data.get("WATERMARK_PATH", None),
         }
 

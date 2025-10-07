@@ -4,10 +4,7 @@ image_generation_client.py
 Abstraction layer for AI-based image generation services.
 Currently implemented for OpenAI's Images API.
 """
-import os
 import base64
-from datetime import datetime
-from pathlib import Path
 from logging import getLogger
 from typing import Protocol, Literal
 from PIL import Image
@@ -15,11 +12,9 @@ import io
 
 from openai import OpenAI
 
-from AntonIA.common.config import config
 
 
 logger = getLogger("AntonIA.image_generation_client")
-
 
 
 class ImageGenerationClient(Protocol):
@@ -46,7 +41,7 @@ class MockImageGenerationClient:
     
 
 class OpenAIimageGenerationClient:
-    def __init__(self, model: str = "gpt-image-1"):
+    def __init__(self, api_key, model: str = "gpt-image-1"):
         """
         Initialize the image generation client.
 
@@ -54,7 +49,7 @@ class OpenAIimageGenerationClient:
             model: model identifier for image generation (e.g., 'gpt-image-1')
             output_dir: local directory where images will be saved
         """
-        self.client = OpenAI(api_key=config.openai_api_key)
+        self.client = OpenAI(api_key=api_key)
         self.model = model
 
     def generate_image(

@@ -10,8 +10,6 @@ from typing import Protocol
 
 from openai import OpenAI
 
-from AntonIA.common.config import config
-
 
 
 logger = getLogger("AntonIA.llm_client")
@@ -32,8 +30,8 @@ class MockAIClient:
 
 
 class OpenAIClient:
-    def __init__(self, model: str = "gpt-4.1-nano", system_prompt: str = ""):
-        self.client = OpenAI(api_key=config.openai_api_key)
+    def __init__(self, api_key, model: str = "gpt-4.1-nano", system_prompt: str = ""):
+        self.client = OpenAI(api_key=api_key)
         self.model = model
         self.system_prompt = system_prompt
 
