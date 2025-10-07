@@ -5,14 +5,18 @@ Handles the orchestration of AI image generation from prompts.
 """
 
 from logging import getLogger
-from pathlib import Path
+from typing import Callable, Optional
 
 from ..services.image_generation_client import ImageGenerationClient
+
+
 
 logger = getLogger("AntonIA.image_generator")
 
 
-def generate(client: ImageGenerationClient, prompt: str, size: str = "1024x1024") -> Path:
+image_processing_fn_signature = Callable[[bytes], bytes]
+
+def generate(client: ImageGenerationClient, prompt: str, size: str = "1024x1024", postprocess_fn: Optional[image_processing_fn_signature] = None) -> bytes:
     """
     Generate an image given a prompt.
 
@@ -25,7 +29,10 @@ def generate(client: ImageGenerationClient, prompt: str, size: str = "1024x1024"
     """
     logger.info("Starting image generation process...")
 
-    image_path = client.generate_image(prompt, size)
-
+    image_bytes = client.generate_image(prompt, size)
     logger.info(f"Image generated successfully")
-    return image_path
+
+    if postprocess_fn:
+        image_bytes = postprocess_fn(image_bytes)
+
+    return image_bytes

@@ -1,4 +1,5 @@
 from AntonIA.common.logger_setup import setup_logging
+from AntonIA.common.config import config
 from AntonIA.services import (
     OpenAIClient, MockAIClient,
     LocalStorageClient, MockStorageClient,
@@ -13,7 +14,7 @@ from AntonIA.core import (
     run_info_saver,
     retrieve_past_records,
 )
-
+from AntonIA.utils.image_utils import add_watermark_fn_factory
 
 def main():
     logger = setup_logging()
@@ -42,7 +43,7 @@ def main():
     # Pipeline execution
     past_records = retrieve_past_records.retrieve_past_n_days(database_client, "antonIA_runs", n_days=10)
 
-    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client_1, past_records, temperature=0.4)
+    prompt_for_image_generation, response_details = prompt_generator.generate(llm_client_1, past_records, temperature=0.1)
     
     caption = instagram_caption_generator.generate(
         llm_client_2, 
@@ -50,7 +51,12 @@ def main():
         topic=response_details["topic"], 
         style=response_details["style"], 
     )
-    image_bytes = image_generator.generate(image_generator_client, prompt_for_image_generation, size="1024x1024")
+    image_bytes = image_generator.generate(
+        image_generator_client, 
+        prompt_for_image_generation, 
+        size="1024x1024", 
+        postprocess_fn=add_watermark_fn_factory(config.watermark_path, opacity=0.8, scale=0.2)
+        )
     saved_image_path = image_saver.save(image_bytes, storage_client)
 
     run_info = run_info_saver.RunInfo.from_generation_details(
