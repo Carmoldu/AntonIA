@@ -26,7 +26,7 @@ def generate(llm_client: LLMClient, template: str, phrase: str, topic: str, styl
     Returns:
         str: generated caption text
     """
-    prompt = build_prompt_from_template(template, phrase, topic, style)
+    prompt = build_prompt_from_template(template, {"phrase": phrase, "topic": topic, "style": style})
     logger.info("Generating Instagram caption...")
     return query_llm(llm_client, prompt)
 

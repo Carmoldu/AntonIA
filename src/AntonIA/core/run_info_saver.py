@@ -53,4 +53,3 @@ def save(db_client: DatabaseClient, table: str, record: RunInfo) -> None:
     """
     logger.info("Saving run information to the database...")
     db_client.save_record(table, record.as_dict())
-    logger.info("Run information saved successfully.")
