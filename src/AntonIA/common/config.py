@@ -42,7 +42,7 @@ class Config:
                 yaml_data = yaml.safe_load(f) or {}
 
         # Compose some of the configs
-        runs_table_name = f"{yaml_data["GRANDMA_NAME"]}_runs"
+        runs_table_name = f"{yaml_data['GRANDMA_NAME']}_runs"
 
         # 3. Merge environment variables (override YAML)
         merged = {
