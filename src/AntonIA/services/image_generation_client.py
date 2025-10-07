@@ -23,7 +23,7 @@ logger = getLogger("AntonIA.image_generation_client")
 
 
 class ImageGenerationClient(Protocol):
-    def generate_image(self, prompt: str, size: str = "1024x1024") -> Path:
+    def generate_image(self, prompt: str, size: str = "1024x1024") -> bytes:
         """Generate an image from a textual prompt and return the path to the saved image."""
         pass
 
@@ -66,7 +66,7 @@ class OpenAIimageGenerationClient:
                 '1536x1024', 
                 'auto',
                 ] = "1024x1024"
-            ) -> Path:
+            ) -> bytes:
         """
         Generate an image from a textual prompt and save it locally.
 
