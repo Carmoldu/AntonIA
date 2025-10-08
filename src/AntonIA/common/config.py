@@ -82,6 +82,7 @@ class DatabaseConfig:
 class GrandmaConfig:
     name: str
     language: str
+    hashtags:str
     watermark_path: Optional[str] = None
 
     @property
@@ -228,6 +229,7 @@ def _build_grandma_config(persona_grandma: Dict[str, Any]) -> GrandmaConfig:
     return GrandmaConfig(
         name=persona_grandma["name"],
         language=persona_grandma.get("language", "spanish"),
+        hashtags=persona_grandma.get("hashtags", "#buenosdías #alegría #amor"),
         watermark_path=persona_grandma.get("watermark_path"),
     )
 

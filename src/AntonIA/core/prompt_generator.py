@@ -48,6 +48,7 @@ def generate(
         image_prompt_template: str, 
         past_records: str, 
         temperature: float = 0.8,
+        language: str = "spanish",
         ) -> tuple[str, dict]:
     """
     Main function to generate the morning phrase and image prompt.
@@ -60,10 +61,18 @@ def generate(
     """
     day_of_the_week = get_day_of_week()
 
-    prompt = build_prompt_from_template(prompt_generateion_template, {"day_of_week": day_of_the_week, "past_records": past_records})
+    prompt = build_prompt_from_template(
+        prompt_generateion_template, 
+        {
+            "day_of_week": day_of_the_week, 
+            "past_records": past_records, 
+            "language": language,
+            }
+        )
 
     response = query_llm(llm_client, prompt, temperature)
     parsed_response = parse_response(response)
+    parsed_response["language"] = language
 
     image_prompt = build_prompt_from_template(image_prompt_template, parsed_response)
     logger.info(f"Image generation prompt: {image_prompt}")

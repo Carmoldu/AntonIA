@@ -1,4 +1,5 @@
 grandma:
   name: "AntonIA_cast"
   language: "spanish"
+  hashtags: "#buenosdías #alegría #amor"
   watermark_path: "./assets/antonIA_cast_watermark.png"

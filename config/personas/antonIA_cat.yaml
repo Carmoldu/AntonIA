@@ -1,0 +1,5 @@
+grandma:
+  name: "AntonIA_cat"
+  language: "catalan"
+  hasthags: "#bondia #alegria #amor"
+  watermark_path: "./assets/antonIA_cat_watermark.png"

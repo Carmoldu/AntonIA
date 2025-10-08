@@ -15,17 +15,21 @@ from AntonIA.core import (
     retrieve_past_records,
 )
 from AntonIA.utils.image_utils import add_watermark_fn_factory
+from AntonIA.utils.prompts import build_prompt_from_template
 
 def main():
     logger = setup_logging()
 
-    config = load_config("AntonIA_cast")
+    config = load_config("AntonIA_cat")
 
     # Set up clients
     llm_client_1 = OpenAIClient(
         api_key=config.llm.api_key,
         model=config.llm.model,
-        system_prompt=config.llm.system_prompt,
+        system_prompt=build_prompt_from_template(
+            config.llm.system_prompt, 
+            {"language": config.grandma.language}
+            ),
     )
     llm_client_2 = llm_client_1  # Using the same LLM client for both tasks, set up like this for easy swapping with MockAIClient
     image_generator_client = OpenAIimageGenerationClient(
@@ -44,17 +48,18 @@ def main():
 
     # Pipeline execution
     past_records = retrieve_past_records.retrieve_past_n_days(
-        database_client, 
-        config.database.runs_table_name, 
+        database_client=database_client, 
+        table=config.database.runs_table_name, 
         n_days=config.database.past_records_to_retrieve
         )
 
     prompt_for_image_generation, response_details = prompt_generator.generate(
-        llm_client_1, 
-        config.prompts.creation_template,
-        config.prompts.image_gen_template,
-        past_records, 
+        llm_client=llm_client_1, 
+        prompt_generateion_template=config.prompts.creation_template,
+        image_prompt_template=config.prompts.image_gen_template,
+        past_records=past_records, 
         temperature=config.llm.temperature,
+        language=config.grandma.language,
         )
     
     caption = instagram_caption_generator.generate(
@@ -64,6 +69,8 @@ def main():
         topic=response_details["topic"], 
         style=response_details["style"], 
         temperature=config.llm.temperature,
+        language=config.grandma.language,
+        hashtags=config.grandma.hashtags,
     )
 
     image_bytes = image_generator.generate(
