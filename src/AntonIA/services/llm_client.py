@@ -45,7 +45,6 @@ class OpenAIClient:
                 {"role": "user", "content": prompt}
                 ],
             temperature=temperature,
-            max_tokens=1000,
         )
         return response.choices[0].message.content
 
