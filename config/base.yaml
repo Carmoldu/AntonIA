@@ -1,0 +1,12 @@
+LLM:
+  model: "gpt-4.1-mini"
+  temperature: 0.8
+
+image:
+  model: "gpt-image-1-mini"
+  size: "1024x1024"
+  storage_path: "./outputs/images"
+
+database:
+  past_records_path: "./outputs/database"
+  past_records_to_retrieve: 10
