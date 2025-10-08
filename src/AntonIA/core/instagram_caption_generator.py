@@ -13,7 +13,7 @@ logger = getLogger("AntonIA.instagram_caption_generator")
 
 
 
-def generate(llm_client: LLMClient, template: str, phrase: str, topic: str, style: str) -> str:
+def generate(llm_client: LLMClient, temperature: float, template: str, phrase: str, topic: str, style: str) -> str:
     """
     Uses the LLM client to generate an Instagram caption.
 
@@ -28,6 +28,6 @@ def generate(llm_client: LLMClient, template: str, phrase: str, topic: str, styl
     """
     prompt = build_prompt_from_template(template, {"phrase": phrase, "topic": topic, "style": style})
     logger.info("Generating Instagram caption...")
-    return query_llm(llm_client, prompt)
+    return query_llm(llm_client, prompt, temperature=temperature)
 
 

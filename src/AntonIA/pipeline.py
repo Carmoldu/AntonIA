@@ -54,6 +54,7 @@ def main():
         phrase=response_details["phrase"], 
         topic=response_details["topic"], 
         style=response_details["style"], 
+        temperature=config.llm_temperature,
     )
 
     image_bytes = image_generator.generate(
