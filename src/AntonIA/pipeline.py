@@ -45,7 +45,7 @@ def main():
         config.prompt_creation_template,
         config.image_prompt_template,
         past_records, 
-        temperature=0.1,
+        temperature=config.llm_temperature,
         )
     
     caption = instagram_caption_generator.generate(

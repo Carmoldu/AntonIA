@@ -15,6 +15,7 @@ class Config:
     runs_table_name: str
     openai_api_key: str
     llm_model: str
+    llm_temperature: float
     llm_system_prompt: str
     prompt_creation_template: str
     image_prompt_template: str
@@ -51,6 +52,7 @@ class Config:
             "runs_table_name": runs_table_name,
             "openai_api_key": os.getenv("OPENAI_API_KEY", None),
             "llm_model": yaml_data.get("LLM_MODEL", "gpt-4.1-nano"),
+            "llm_temperature": float(yaml_data.get("LLM_TEMPERATURE", 0.8)),
             "llm_system_prompt": yaml_data.get("LLM_SYSTEM_PROMPT", ""),
             "prompt_creation_template": yaml_data["PROMPT_CREATION_TEMPLATE"],
             "image_prompt_template": yaml_data["IMAGE_PROMPT_TEMPLATE"],

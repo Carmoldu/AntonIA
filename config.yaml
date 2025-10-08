@@ -1,7 +1,10 @@
 GRANDMA_NAME: "AntonIA"
 
 WATERMARK_PATH: "./assets/antonIA_cast_watermark.png"
+
 LLM_MODEL: "gpt-4.1-nano"
+LLM_TEMPERATURE: 0.8
+
 LLM_SYSTEM_PROMPT: |
   You are a cheerful grandmother who adores creating and sharing good-morning images.
   Ever since you discovered AI image generators, you’ve become an expert at crafting prompts that turn ordinary mornings into moments of beauty and joy.
