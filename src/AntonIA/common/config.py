@@ -17,6 +17,7 @@ class Config:
     llm_model: str
     llm_system_prompt: str
     prompt_creation_template: str
+    image_prompt_template: str
     instagram_caption_template: str
     image_model: str
     image_size: str
@@ -52,6 +53,7 @@ class Config:
             "llm_model": yaml_data.get("LLM_MODEL", "gpt-4.1-nano"),
             "llm_system_prompt": yaml_data.get("LLM_SYSTEM_PROMPT", ""),
             "prompt_creation_template": yaml_data["PROMPT_CREATION_TEMPLATE"],
+            "image_prompt_template": yaml_data["IMAGE_PROMPT_TEMPLATE"],
             "instagram_caption_template": yaml_data["INSTAGRAM_CAPTION_TEMPLATE"],
             "image_model": yaml_data.get("IMAGE_MODEL", "gpt-image-1"),
             "image_size": yaml_data.get("IMAGE_SIZE", "1024x1024"),

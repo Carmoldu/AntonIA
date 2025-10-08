@@ -43,6 +43,7 @@ def main():
     prompt_for_image_generation, response_details = prompt_generator.generate(
         llm_client_1, 
         config.prompt_creation_template,
+        config.image_prompt_template,
         past_records, 
         temperature=0.1,
         )
@@ -73,9 +74,6 @@ def main():
 
     run_info_saver.save(database_client, config.runs_table_name, run_info)
 
-
-
-    
 
 if __name__ == "__main__":
     main()
