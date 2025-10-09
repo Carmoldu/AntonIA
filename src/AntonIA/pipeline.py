@@ -17,10 +17,12 @@ from AntonIA.core import (
 from AntonIA.utils.image_utils import add_watermark_fn_factory
 from AntonIA.utils.prompts import build_prompt_from_template
 
-def main():
+
+
+def main(persona: str = "default"):
     logger = setup_logging()
 
-    config = load_config("AntonIA_cat")
+    config = load_config(persona)
 
     # Set up clients
     llm_client_1 = OpenAIClient(
@@ -101,4 +103,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("AntonIA_cast")
