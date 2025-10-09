@@ -1,7 +1,6 @@
 import yaml
-
-
 from pathlib import Path
+
 
 
 def load_yaml(path: Path) -> dict:
