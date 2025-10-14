@@ -103,4 +103,4 @@ def main(persona: str = "default"):
 
 
 if __name__ == "__main__":
-    main("AntonIA_cast")
+    main("AntonIA_cat")
