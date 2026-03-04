@@ -11,3 +11,12 @@ dist/
 
 .coverage
 *.parquet
+
+.pytest_cache
+
+
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/crash.log
+infra/.terraform*
