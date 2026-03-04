@@ -1,11 +1,14 @@
+import os
+
 from AntonIA.common.logger_setup import setup_logging
 from AntonIA.common.config import load_config
 from AntonIA.services import (
     OpenAIClient, MockAIClient,
-    LocalStorageClient, MockStorageClient,
+    LocalStorageClient, MockStorageClient, AzureBlobStorageClient,
     OpenAIimageGenerationClient, MockImageGenerationClient,
     LocalFileDatabaseClient, MockDatabaseClient,
 )
+
 from AntonIA.core import (
     image_saver,
     prompt_generator,
@@ -16,6 +19,14 @@ from AntonIA.core import (
 )
 from AntonIA.utils.image_utils import add_watermark_fn_factory
 from AntonIA.utils.prompts import build_prompt_from_template
+
+
+# Fix SSL certificate issues for Azure Blob Storage client
+import os
+import certifi
+
+os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
+os.environ["SSL_CERT_FILE"] = certifi.where()
 
 
 
@@ -38,7 +49,11 @@ def main(persona: str = "default"):
         api_key=config.image.api_key, 
         model=config.image.model
         )
-    storage_client = LocalStorageClient(base_dir=config.image.storage_path)
+    #storage_client = LocalStorageClient(base_dir=config.image.storage_path)
+    storage_client = AzureBlobStorageClient(
+        connection_string=os.getenv("AZURE_STORAGE_CONNECTION_STRING"), 
+        container_name=os.getenv("AZURE_STORAGE_CONTAINER"),
+        )
     database_client = LocalFileDatabaseClient(db_path=config.database.past_records_path)
 
     # llm_client_1 = MockAIClient(response='{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}')

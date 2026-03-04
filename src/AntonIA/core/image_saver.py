@@ -1,7 +1,7 @@
 from datetime import datetime
 from logging import getLogger
 import hashlib
-from ..services.storage_client import LocalStorageClient
+from ..services.storage_client import StorageClient
 
 
 
@@ -13,13 +13,13 @@ def file_namer(data: bytes, extension: str, add_date: bool = True) -> str:
     parts = [part for part in [timestamp, hash_digest] if part]
     return "_".join(parts) + extension
 
-def save(image_data: bytes, storage_client: LocalStorageClient, add_date: bool = True) -> str:
+def save(image_data: bytes, storage_client: StorageClient, add_date: bool = True) -> str:
     """
     Save image data using the provided storage client.
 
     Args:
         image_data: binary image data to be saved
-        storage_client: instance of LocalStorageClient to handle saving
+        storage_client: instance following StorageClient interface to handle saving
         add_date: whether to include the current date in the filename
 
     Returns:

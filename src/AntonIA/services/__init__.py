@@ -1,4 +1,4 @@
 from .llm_client import OpenAIClient, MockAIClient
-from .storage_client import LocalStorageClient, MockStorageClient
+from .storage_client import LocalStorageClient, MockStorageClient, AzureBlobStorageClient
 from .image_generation_client import OpenAIimageGenerationClient, MockImageGenerationClient
 from .database_client import LocalFileDatabaseClient, MockDatabaseClient

@@ -1,21 +1,10 @@
 from pathlib import Path
 from logging import getLogger
-from typing import Protocol, Optional
+from typing import Optional
 
 
 
-logger = getLogger("AntonIA.storage_client")
-
-class StorageClient(Protocol):
-    def save_file(self, file_path: Path, destination: str) -> str:
-        """Save a file to the storage and return its URL or identifier."""
-        pass
-
-
-class MockStorageClient:
-    def save_file(self, data: bytes, filename: str, destination: Optional[list[str]] = None) -> str:
-        logger.info(f"Mock save file '{filename}' to destination '{'/'.join(destination) if destination else ''}'")
-        return f"mock://{('/'.join(destination) + '/' if destination else '')}{filename}"
+logger = getLogger("AntonIA.local_storage_client")
 
 
 class LocalStorageClient:
