@@ -2,7 +2,8 @@ import pytest
 import tempfile
 import shutil
 from pathlib import Path
-from AntonIA.services.storage_client import MockStorageClient, LocalStorageClient
+from AntonIA.services.storage_client import LocalStorageClient
+from AntonIA.services.storage_client.MockStorageClient import MockStorageClient
 
 def test_mock_storage_client_save_file():
     client = MockStorageClient()

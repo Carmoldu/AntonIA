@@ -1,4 +1,6 @@
 
-from .base import StorageClient, MockStorageClient
-from .local import LocalStorageClient
-from .azure_blob import AzureBlobStorageClient
+from .MockStorageClient import MockStorageClient
+
+from .base import StorageClient
+from .LocalStorageClient import LocalStorageClient
+from .AzureBlobStorageClient import AzureBlobStorageClient

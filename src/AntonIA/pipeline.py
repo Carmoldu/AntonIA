@@ -4,7 +4,7 @@ from AntonIA.common.logger_setup import setup_logging
 from AntonIA.common.config import load_config
 from AntonIA.services import (
     OpenAIClient, MockAIClient,
-    LocalStorageClient, MockStorageClient, AzureBlobStorageClient,
+    MockStorageClient, LocalStorageClient, AzureBlobStorageClient,
     OpenAIimageGenerationClient, MockImageGenerationClient,
     LocalFileDatabaseClient, MockDatabaseClient,
 )
