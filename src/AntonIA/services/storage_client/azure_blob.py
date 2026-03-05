@@ -7,12 +7,6 @@ from typing import Optional
 
 from logging import getLogger
 
-import certifi
-import os
-
-# Ensure the SSL certificate file is set for secure connections
-os.environ["SSL_CERT_FILE"] = certifi.where()
-
 
 
 logger = getLogger("AntonIA.azure_storage_client")

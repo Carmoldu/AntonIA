@@ -1,4 +1,4 @@
-from .storage_client.MockStorageClient import MockStorageClient
+from .storage_client.mock import MockStorageClient
 
 from .llm_client import OpenAIClient, MockAIClient
 from .storage_client import LocalStorageClient, AzureBlobStorageClient
