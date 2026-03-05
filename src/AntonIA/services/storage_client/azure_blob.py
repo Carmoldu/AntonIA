@@ -1,3 +1,5 @@
+from pathlib import PurePosixPath
+
 from azure.storage.blob import BlobServiceClient, ContentSettings
 
 import mimetypes
@@ -20,6 +22,7 @@ class AzureBlobStorageClient:
         self,
         connection_string: str,
         container_name: str,
+        base_dir: Optional[str] = None,
     ):
         """
         Initialize Azure Blob Storage client.
@@ -27,6 +30,7 @@ class AzureBlobStorageClient:
         Args:
             connection_string: Azure Storage connection string
             container_name: Name of the blob container
+            base_dir (optional): Base directory within the container to save files. Defaults to root.
         """
         self.blob_service_client = BlobServiceClient.from_connection_string(
             connection_string
@@ -35,6 +39,7 @@ class AzureBlobStorageClient:
             container_name
         )
         self.container_name = container_name
+        self.base_dir = PurePosixPath(base_dir) if base_dir else PurePosixPath()
 
     def save_file(
         self,
@@ -53,12 +58,11 @@ class AzureBlobStorageClient:
         Returns:
             Blob URL as string
         """
+        destination = destination or []
 
         blob_path = (
-            f"{'/'.join(destination)}/{filename}"
-            if destination
-            else filename
-        )
+            self.base_dir / PurePosixPath(*destination) / filename
+        ).as_posix()
 
         logger.info(f"Uploading blob to '{blob_path}'")
 
