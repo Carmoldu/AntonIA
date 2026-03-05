@@ -3,6 +3,7 @@ from PIL import Image
 from AntonIA.utils import image_utils
 import tempfile
 import os
+from io import BytesIO
 
 def create_test_image(color=(255, 0, 0, 255), size=(100, 100)):
     img = Image.new("RGBA", size, color)
@@ -22,11 +23,7 @@ def test_add_watermark_basic():
     base_img_bytes = create_test_image()
     watermark_path = create_temp_watermark()
     result_bytes = image_utils.add_watermark(base_img_bytes, watermark_path)
-    result_img = Image.open(tempfile.SpooledTemporaryFile())
-    result_img = Image.open(tempfile.SpooledTemporaryFile())
-    result_img.fp.write(result_bytes)
-    result_img.fp.seek(0)
-    result_img = Image.open(result_img.fp)
+    result_img = Image.open(BytesIO(result_bytes))
     assert result_img.size == (100, 100)
     os.remove(watermark_path)
 
@@ -35,10 +32,7 @@ def test_add_watermark_opacity_and_scale():
     watermark_path = create_temp_watermark()
     # Test with different opacity and scale
     result_bytes = image_utils.add_watermark(base_img_bytes, watermark_path, opacity=0.5, scale=0.5)
-    result_img = Image.open(tempfile.SpooledTemporaryFile())
-    result_img.fp.write(result_bytes)
-    result_img.fp.seek(0)
-    result_img = Image.open(result_img.fp)
+    result_img = Image.open(BytesIO(result_bytes))
     assert result_img.size == (100, 100)
     os.remove(watermark_path)
 
@@ -48,10 +42,7 @@ def test_add_watermark_fn_factory_valid():
     fn = image_utils.add_watermark_fn_factory(watermark_path, opacity=0.7, scale=0.3)
     assert callable(fn)
     result_bytes = fn(base_img_bytes)
-    result_img = Image.open(tempfile.SpooledTemporaryFile())
-    result_img.fp.write(result_bytes)
-    result_img.fp.seek(0)
-    result_img = Image.open(result_img.fp)
+    result_img = Image.open(BytesIO(result_bytes))
     assert result_img.size == (100, 100)
     os.remove(watermark_path)
 
