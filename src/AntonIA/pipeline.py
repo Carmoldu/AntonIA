@@ -1,5 +1,8 @@
 import os
 
+import truststore
+truststore.inject_into_ssl()
+
 from AntonIA.common.logger_setup import setup_logging
 from AntonIA.common.config import load_config
 from AntonIA.services import (
@@ -19,14 +22,6 @@ from AntonIA.core import (
 )
 from AntonIA.utils.image_utils import add_watermark_fn_factory
 from AntonIA.utils.prompts import build_prompt_from_template
-
-
-# Fix SSL certificate issues for Azure Blob Storage client
-import os
-import certifi
-
-os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
-os.environ["SSL_CERT_FILE"] = certifi.where()
 
 
 
@@ -53,6 +48,7 @@ def main(persona: str = "default"):
     storage_client = AzureBlobStorageClient(
         connection_string=os.getenv("AZURE_STORAGE_CONNECTION_STRING"), 
         container_name=os.getenv("AZURE_STORAGE_CONTAINER"),
+        base_dir=config.image.storage_path,
         )
     database_client = LocalFileDatabaseClient(db_path=config.database.past_records_path)
 
