@@ -42,59 +42,55 @@ def create_llm_client(llm_cfg: cfg_module.LLMConfig, *, system_prompt: str = "")
     ValueError
         If the ``llm_cfg.type`` is not recognized.
     """
-    t = getattr(llm_cfg, "type", "openai")
-    if t == "openai":
+    if llm_cfg.type == "open_ai":
         return OpenAIClient(
-            api_key=llm_cfg.api_key,
-            model=llm_cfg.model,
+            api_key=llm_cfg.open_ai.api_key,
+            model=llm_cfg.open_ai.model,
             system_prompt=system_prompt,
         )
-    elif t == "mock":
+    elif llm_cfg.type == "mock":
         # mock ignores the api key/model values
-        return MockAIClient(llm_cfg.response)
+        return MockAIClient(llm_cfg.mock.response)
     else:
-        raise ValueError(f"Unknown llm client type '{t}'")
+        raise ValueError(f"Unknown llm client type '{llm_cfg.type}'")
 
 
 # ---- image generation -------------------------------------------------
 def create_image_client(img_cfg: cfg_module.ImageConfig):
-    t = getattr(img_cfg, "type", "openai")
-    if t == "openai":
-        return OpenAIimageGenerationClient(api_key=img_cfg.api_key, model=img_cfg.model)
-    elif t == "mock":
+    if img_cfg.type == "open_ai":
+        return OpenAIimageGenerationClient(
+            api_key=img_cfg.open_ai.api_key, 
+            model=img_cfg.open_ai.model,
+            )
+    elif img_cfg.type == "mock":
         return MockImageGenerationClient()
     else:
-        raise ValueError(f"Unknown image generation client type '{t}'")
+        raise ValueError(f"Unknown image generation client type '{img_cfg.type}'")
 
 
 # ---- storage -----------------------------------------------------------
 def create_storage_client(storage_cfg: cfg_module.StorageConfig):
     """Instantiate a storage client according to configuration."""
-    t = getattr(storage_cfg, "type", "local")
-    if t == "local":
-        # for convenience allow the base_dir to be picked up from image config
-        return LocalStorageClient(base_dir=storage_cfg.base_dir)
-    elif t == "azure":
-        conn = storage_cfg.connection_string or os.getenv("AZURE_STORAGE_CONNECTION_STRING")
-        container = storage_cfg.container_name or os.getenv("AZURE_STORAGE_CONTAINER")
+    if storage_cfg.type == "local":
+        return LocalStorageClient(base_dir=storage_cfg.local.base_dir)
+    elif storage_cfg.type == "azure":
         return AzureBlobStorageClient(
-            connection_string=conn,
-            container_name=container,
-            base_dir=storage_cfg.base_dir,
+            connection_string=storage_cfg.azure.connection_string,
+            container_name=storage_cfg.azure.container_name ,
+            base_dir=storage_cfg.azure.base_dir,
         )
-    elif t == "mock":
+    elif storage_cfg.type == "mock":
         return MockStorageClient()
     else:
-        raise ValueError(f"Unknown storage client type '{t}'")
+        raise ValueError(f"Unknown storage client type '{storage_cfg.type}'")
 
 
 # ---- database ----------------------------------------------------------
 def create_database_client(db_cfg: cfg_module.DatabaseConfig):
-    t = getattr(db_cfg, "type", "local")
-    if t == "local":
+    if db_cfg.type == "local":
         # expects a path to directory where parquet tables are stored
-        return LocalFileDatabaseClient(db_path=db_cfg.past_records_path)
-    elif t == "mock":
+        return LocalFileDatabaseClient(db_path=db_cfg.local.past_records_path)
+    elif db_cfg.type == "mock":
         return MockDatabaseClient()
     else:
-        raise ValueError(f"Unknown database client type '{t}'")
+        raise ValueError(f"Unknown database client type '{db_cfg.type}'")

@@ -35,30 +35,47 @@ class PromptsConfig:
 
 
 @dataclass
+class LLMConfig:
+    open_ai: OpenAILLMConfig
+    mock: MockLLMConfig
+    type: str = "mock"
+    temperature: float = 0.0
+
+@dataclass
 class OpenAILLMConfig:
-    type: str = "gpt-4.1"
     api_key: str = ""
     model: str = "gpt-4.1"
     temperature: float = 0.8
 
 @dataclass
 class MockLLMConfig:
-    type: str = "mock"
     response: str = '{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}'
-    temperature: float = 0.8
+    temperature: float = 0.3
+
+
+@dataclass
+class ImageConfig:
+    open_ai: OpenAIImageConfig
+    size: str = "1024x1024"
+    type: str = "mock"
+
+# Note ImageConfig does not have a Mock because the mock image client does not require 
+# any configuration, but we could easily add one if needed in the future
 
 @dataclass
 class OpenAIImageConfig:
-    type: str = "openai"
     api_key: str = ""
     model: str = "gpt-image-1-mini"
-    size: str = "1024x1024"
     storage_path: str = "./outputs/images"
 
+
 @dataclass
-class MockImageConfig:
+class DatabaseConfig:
+    local: LocalDatabaseConfig
     type: str = "mock"
-    size: str = "1024x1024"
+
+# Note DatabaseConfig does not have a Mock because the mock database client does not require 
+# any configuration, but we could easily add one if needed in the future
 
 
 @dataclass
@@ -66,10 +83,16 @@ class LocalDatabaseConfig:
     type: str = "local"
     past_records_path: str = ""
 
+
 @dataclass
-class MockDatabaseConfig:
+class StorageConfig:
+    local: LocalStorageConfig
+    azure: AzureStorageConfig
     type: str = "mock"
 
+
+# Note StorageConfig does not have a Mock because the mock storage client does not require 
+# any configuration, but we could easily add one if needed in the future
 
 @dataclass
 class AzureStorageConfig:
@@ -83,40 +106,18 @@ class LocalStorageConfig:
     type: str = "local"
     base_dir: str = "./outputs/storage"
 
-@dataclass
-class MockStorageConfig:
-    type: str = "mock"
-
-
-# @dataclass
-# class Config:
-#     grandma: GrandmaConfig
-#     llm: OpenAILLMConfig | MockLLMConfig
-#     image: OpenAIImageConfig | MockImageConfig
-#     storage: AzureStorageConfig | LocalStorageConfig | MockStorageConfig
-#     database: LocalDatabaseConfig | MockDatabaseConfig
-
 
 @dataclass
 class Config:
     grandma: GrandmaConfig
-    llm: Any
-    image: Any
-    storage: Any
-    database: Any
+    llm: LLMConfig
+    image: ImageConfig
+    storage: StorageConfig
+    database: DatabaseConfig
     past_records_to_retrieve: int = 10
 
 
 # register config with Hydra so the @hydra.main entrypoint can construct it
 cs = ConfigStore.instance()
 cs.store(name="base_config", node=Config)
-cs.store(group="llm", name="mock", node=MockLLMConfig)
-cs.store(group="image", name="openai", node=OpenAIImageConfig)
-cs.store(group="image", name="mock", node=MockImageConfig)
-cs.store(group="storage", name="local", node=LocalStorageConfig)
-cs.store(group="llm", name="openai", node=OpenAILLMConfig)
-cs.store(group="storage", name="azure", node=AzureStorageConfig)
-cs.store(group="storage", name="mock", node=MockStorageConfig)
-cs.store(group="database", name="local", node=LocalDatabaseConfig)
-cs.store(group="database", name="mock", node=MockDatabaseConfig)
 

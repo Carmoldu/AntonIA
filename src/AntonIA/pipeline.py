@@ -11,12 +11,6 @@ import hydra
 from AntonIA.common.logger_setup import setup_logging
 from AntonIA.common.config import Config
 
-from AntonIA.services import (
-    OpenAIClient, MockAIClient,
-    OpenAIimageGenerationClient, MockImageGenerationClient,
-    LocalFileDatabaseClient, MockDatabaseClient,
-    MockStorageClient, LocalStorageClient, AzureBlobStorageClient,
-)
 from AntonIA.services import factory
 
 from AntonIA.core import (
@@ -29,9 +23,6 @@ from AntonIA.core import (
 )
 from AntonIA.utils.image_utils import add_watermark_fn_factory
 from AntonIA.utils.prompts import build_prompt_from_template
-
-
-
 
 
 
@@ -51,18 +42,8 @@ def run(cfg: Config):
     llm_client_2 = llm_client_1  # reuse for simplicity
 
     image_generator_client = factory.create_image_client(cfg.image)
-
-    # storage config is independent from image details; base_dir can be set
     storage_client = factory.create_storage_client(cfg.storage)
-
     database_client = factory.create_database_client(cfg.database)
-
-    # previously hard‑coded mocks for development/testing (now use config)
-    # llm_client_1 = MockAIClient(response='{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}')
-    # llm_client_2 = MockAIClient(response="This is a caption")
-    # image_generator_client = MockImageGenerationClient()
-    # storage_client = MockStorageClient()
-    # database_client = MockDatabaseClient()
 
 
     # Pipeline execution

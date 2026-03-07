@@ -1,10 +1,40 @@
 defaults:
   - base_config
-  - llm: gpt-4.1
-  - image: gpt-image-1-mini
-  - storage: azure
-  - database: local
+
+  # The @ mainly mean "take the configuration defined in the file and inject it
+  # in this field"
+  - llm/gpt-4.1@llm.open_ai
+  - llm/mock@llm.mock
+
+  - image/gpt-image-1-mini@image.open_ai
+  # Note image does not have a mock because the mock image client does not require 
+  # any configuration, but we could easily add one if needed in the future
+
+  - storage/azure@storage.azure
+  - storage/local@storage.local
+  # Note storage does not have a mock because the mock storage client does not require 
+  # any configuration, but we could easily add one if needed in the future
+
+  - database/local@database.local
+  # Note database does not have a mock because the mock database client does not require 
+  # any configuration, but we could easily add one if needed in the future
+
   - grandma: antonIA_cat
   - _self_
+
+
+llm:
+  type: mock
+  temperature: ${llm.${llm.type}.temperature}  # This will take the temperature from the desired llm and parse it here
+
+image:
+  type: mock
+  size: 1024x1024
+
+storage:
+  type: mock
+
+database:
+  type: mock
 
 past_records_to_retrieve: 10
