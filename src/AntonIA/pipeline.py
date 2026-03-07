@@ -13,10 +13,11 @@ from AntonIA.common.config import Config
 
 from AntonIA.services import (
     OpenAIClient, MockAIClient,
-    MockStorageClient, LocalStorageClient, AzureBlobStorageClient,
     OpenAIimageGenerationClient, MockImageGenerationClient,
     LocalFileDatabaseClient, MockDatabaseClient,
+    MockStorageClient, LocalStorageClient, AzureBlobStorageClient,
 )
+from AntonIA.services import factory
 
 from AntonIA.core import (
     image_saver,
@@ -40,28 +41,23 @@ def run(cfg: Config):
     """
     logger = setup_logging()
 
-    # Set up clients
-    llm_client_1 = OpenAIClient(
-        api_key=cfg.llm.api_key,
-        model=cfg.llm.model,
-        system_prompt=build_prompt_from_template(
-            cfg.grandma.prompts.system,
-            {"language": cfg.grandma.language},
-        ),
+    # Set up clients via configuration-driven factory
+    system_prompt = build_prompt_from_template(
+        cfg.grandma.prompts.system,
+        {"language": cfg.grandma.language},
     )
-    llm_client_2 = llm_client_1  # Using the same LLM client for both tasks, set up like this for easy swapping with MockAIClient
-    image_generator_client = OpenAIimageGenerationClient(
-        api_key=cfg.image.api_key, 
-        model=cfg.image.model
-        )
-    #storage_client = LocalStorageClient(base_dir=config.image.storage_path)
-    storage_client = AzureBlobStorageClient(
-        connection_string=os.getenv("AZURE_STORAGE_CONNECTION_STRING"), 
-        container_name=os.getenv("AZURE_STORAGE_CONTAINER"),
-        base_dir=cfg.image.storage_path,
-        )
-    database_client = LocalFileDatabaseClient(db_path=cfg.database.past_records_path)
 
+    llm_client_1 = factory.create_llm_client(cfg.llm, system_prompt=system_prompt)
+    llm_client_2 = llm_client_1  # reuse for simplicity
+
+    image_generator_client = factory.create_image_client(cfg.image)
+
+    # storage config is independent from image details; base_dir can be set
+    storage_client = factory.create_storage_client(cfg.storage)
+
+    database_client = factory.create_database_client(cfg.database)
+
+    # previously hard‑coded mocks for development/testing (now use config)
     # llm_client_1 = MockAIClient(response='{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}')
     # llm_client_2 = MockAIClient(response="This is a caption")
     # image_generator_client = MockImageGenerationClient()
@@ -73,7 +69,7 @@ def run(cfg: Config):
     past_records = retrieve_past_records.retrieve_past_n_days(
         database_client=database_client, 
         table=cfg.grandma.runs_table_name, 
-        n_days=cfg.database.past_records_to_retrieve
+        n_days=cfg.past_records_to_retrieve
         )
 
     prompt_for_image_generation, response_details = prompt_generator.generate(

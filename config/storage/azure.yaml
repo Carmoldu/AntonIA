@@ -1,0 +1,5 @@
+type: azure
+# connection_string and container_name can come from envs if not set here
+connection_string: ${oc.env:AZURE_STORAGE_CONNECTION_STRING}
+container_name: ${oc.env:AZURE_STORAGE_CONTAINER}
+base_dir: ${..image.storage_path}

@@ -1,22 +1,14 @@
 from __future__ import annotations
 
-import os
 import logging
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 
-from hydra import initialize, compose
 from hydra.core.config_store import ConfigStore
-from omegaconf import OmegaConf, MissingMandatoryValue
 
 logger = logging.getLogger(__name__)
 
-# -------------------------
-# Constants
-# -------------------------
-# DEFAULT_CONFIG_DIR = "./config"
-# ENV_OPENAI_API_KEY = "OPENAI_API_KEY"
+
 
 # -------------------------
 # Exceptions / dataclasses
@@ -35,21 +27,6 @@ class GrandmaConfig:
     watermark_path: Optional[str] = None
 
 @dataclass
-class LLMConfig:
-    api_key: str
-    model: str = "gpt-4.1-nano"
-    temperature: float = 0.8
-
-
-@dataclass
-class ImageConfig:
-    api_key: str
-    model: str = "gpt-image-1-mini"
-    size: str = "1024x1024"
-    storage_path: str = "./outputs/images"
-
-
-@dataclass
 class PromptsConfig:
     system: str
     creation_template: str
@@ -58,76 +35,88 @@ class PromptsConfig:
 
 
 @dataclass
-class DatabaseConfig:
-    past_records_path: str
-    past_records_to_retrieve: int = 10
+class OpenAILLMConfig:
+    type: str = "gpt-4.1"
+    api_key: str = ""
+    model: str = "gpt-4.1"
+    temperature: float = 0.8
+
+@dataclass
+class MockLLMConfig:
+    type: str = "mock"
+    response: str = '{"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}'
+    temperature: float = 0.8
+
+@dataclass
+class OpenAIImageConfig:
+    type: str = "openai"
+    api_key: str = ""
+    model: str = "gpt-image-1-mini"
+    size: str = "1024x1024"
+    storage_path: str = "./outputs/images"
+
+@dataclass
+class MockImageConfig:
+    type: str = "mock"
+    size: str = "1024x1024"
+
+
+@dataclass
+class LocalDatabaseConfig:
+    type: str = "local"
+    past_records_path: str = ""
+
+@dataclass
+class MockDatabaseConfig:
+    type: str = "mock"
+
+
+@dataclass
+class AzureStorageConfig:
+    type: str = "local"
+    base_dir: str | None = None
+    connection_string: str | None = None
+    container_name: str | None = None
+
+@dataclass
+class LocalStorageConfig:
+    type: str = "local"
+    base_dir: str = "./outputs/storage"
+
+@dataclass
+class MockStorageConfig:
+    type: str = "mock"
+
+
+# @dataclass
+# class Config:
+#     grandma: GrandmaConfig
+#     llm: OpenAILLMConfig | MockLLMConfig
+#     image: OpenAIImageConfig | MockImageConfig
+#     storage: AzureStorageConfig | LocalStorageConfig | MockStorageConfig
+#     database: LocalDatabaseConfig | MockDatabaseConfig
 
 
 @dataclass
 class Config:
     grandma: GrandmaConfig
-    llm: LLMConfig
-    image: ImageConfig
-    database: DatabaseConfig
+    llm: Any
+    image: Any
+    storage: Any
+    database: Any
+    past_records_to_retrieve: int = 10
 
 
 # register config with Hydra so the @hydra.main entrypoint can construct it
 cs = ConfigStore.instance()
 cs.store(name="base_config", node=Config)
-
-
-# -------------------------
-# Public API
-# -------------------------
-# def load_config(persona: Optional[str] = None, config_dir: str = DEFAULT_CONFIG_DIR) -> Config:
-#     """Compose Hydra configuration from *config_dir* and return a Config object.
-
-#     ``persona`` is translated into a ``personas=<name>`` override; if omitted
-#     the default persona is used.
-#     """
-
-#     # load dotenv so env vars from a .env file are available during tests
-#     from dotenv import load_dotenv
-
-#     load_dotenv()
-
-#     overrides: list[str] = []
-#     if persona:
-#         overrides.append(f"personas={persona}")
-
-#     try:
-#         with initialize(config_path=config_dir, job_name="load_config"):
-#             cfg = compose(config_name="config", overrides=overrides)
-#     except MissingMandatoryValue as exc:
-#         raise ConfigError(str(exc))
-
-#     cfg_dict = OmegaConf.to_container(cfg, resolve=True)
-
-#     # environment variable takes precedence
-#     api_key = os.getenv(ENV_OPENAI_API_KEY) or cfg_dict.get("llm", {}).get("api_key")
-#     if not api_key:
-#         raise ConfigError(f"{ENV_OPENAI_API_KEY} not found in environment or config.")
-#     cfg_dict["llm"]["api_key"] = api_key
-
-#     # move system prompt out of the prompts section
-#     system_prompt = cfg_dict["prompts"].pop("system", "")
-
-#     try:
-#         return Config(
-#             grandma=GrandmaConfig(**cfg_dict["grandma"]),
-#             llm=LLMConfig(**cfg_dict["llm"], system_prompt=system_prompt),
-#             image=ImageConfig(**cfg_dict["image"]),
-#             prompts=PromptsConfig(**cfg_dict["prompts"]),
-#             database=DatabaseConfig(**cfg_dict["database"]),
-#         )
-#     except TypeError as exc:  # missing fields / bad types
-#         raise ConfigError(str(exc))
-
-
-# def list_personas(config_dir: str = DEFAULT_CONFIG_DIR) -> List[str]:
-#     """Return available persona filenames (without extension)."""
-#     p = Path(config_dir) / "personas"
-#     if not p.exists():
-#         return []
-#     return [fp.stem for fp in p.glob("*.yaml") if fp.is_file()]
+cs.store(group="llm", name="mock", node=MockLLMConfig)
+cs.store(group="image", name="openai", node=OpenAIImageConfig)
+cs.store(group="image", name="mock", node=MockImageConfig)
+cs.store(group="storage", name="local", node=LocalStorageConfig)
+cs.store(group="llm", name="openai", node=OpenAILLMConfig)
+cs.store(group="storage", name="azure", node=AzureStorageConfig)
+cs.store(group="storage", name="mock", node=MockStorageConfig)
+cs.store(group="database", name="local", node=LocalDatabaseConfig)
+cs.store(group="database", name="mock", node=MockDatabaseConfig)
 

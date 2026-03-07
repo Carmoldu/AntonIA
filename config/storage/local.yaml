@@ -1,0 +1,2 @@
+type: local
+base_dir: ${..image.storage_path}  # default to image output path
