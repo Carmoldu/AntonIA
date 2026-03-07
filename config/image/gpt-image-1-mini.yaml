@@ -1,0 +1,4 @@
+api_key: ${oc.env:OPENAI_API_KEY}
+model: gpt-image-1-mini
+size: 1024x1024
+storage_path: ./outputs/images

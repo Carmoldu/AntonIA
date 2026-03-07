@@ -1,7 +1,8 @@
-grandma:
-  name: "AntonIA"
-  language: "spanish"
-  watermark_path: "./assets/antonIA_cast_watermark.png"
+name: AntonIA
+language: catalan
+hashtags: "#bondia #alegria #amor"
+watermark_path: ./assets/antonIA_cat_watermark.png
+runs_table_name: "${grandma.name}_runs"
   
 prompts:
   system: |

@@ -1,39 +1,10 @@
 import pytest
-from AntonIA.pipeline import main
+from AntonIA.pipeline import run
 
 @pytest.fixture
 def mock_dependencies(monkeypatch):
     # Mock all external dependencies used in main
     monkeypatch.setattr("AntonIA.common.logger_setup.setup_logging", lambda: None)
-    monkeypatch.setattr("AntonIA.common.config.load_config", lambda persona: type("Config", (), {
-        "llm": type("LLM", (), {
-            "api_key": "test_key",
-            "model": "test_model",
-            "system_prompt": "test_prompt",
-            "temperature": 0.5
-        })(),
-        "image": type("Image", (), {
-            "api_key": "img_key",
-            "model": "img_model",
-            "size": "512x512",
-            "storage_path": "/tmp"
-        })(),
-        "database": type("Database", (), {
-            "past_records_path": "/tmp/db",
-            "runs_table_name": "runs",
-            "past_records_to_retrieve": 1
-        })(),
-        "grandma": type("Grandma", (), {
-            "language": "en",
-            "watermark_path": "/tmp/watermark.png",
-            "hashtags": "#test"
-        })(),
-        "prompts": type("Prompts", (), {
-            "creation_template": "create_template",
-            "image_gen_template": "image_gen_template",
-            "instagram_caption_template": "caption_template"
-        })()
-    })())
 
     monkeypatch.setattr("AntonIA.services.OpenAIClient", lambda **kwargs: "llm_client")
     monkeypatch.setattr("AntonIA.services.OpenAIimageGenerationClient", lambda **kwargs: "image_client")
@@ -55,5 +26,34 @@ def mock_dependencies(monkeypatch):
     monkeypatch.setattr("AntonIA.core.run_info_saver.save", lambda db_client, table, run_info: None)
 
 def test_main_runs_without_error(mock_dependencies):
-    # Should not raise any exceptions
-    main("test_persona")
+    # Should not raise any exceptions; build a fake config object and pass it directly
+    fake_cfg = type("Cfg", (), {})()
+    fake_cfg.llm = type("LLM", (), {
+        "api_key": "test_key",
+        "model": "test_model",
+        "system_prompt": "test_prompt",
+        "temperature": 0.5
+    })()
+    fake_cfg.image = type("Image", (), {
+        "api_key": "img_key",
+        "model": "img_model",
+        "size": "512x512",
+        "storage_path": "/tmp"
+    })()
+    fake_cfg.database = type("Database", (), {
+        "past_records_path": "/tmp/db",
+        "runs_table_name": "runs",
+        "past_records_to_retrieve": 1
+    })()
+    fake_cfg.grandma = type("Grandma", (), {
+        "language": "en",
+        "watermark_path": "/tmp/watermark.png",
+        "hashtags": "#test"
+    })()
+    fake_cfg.prompts = type("Prompts", (), {
+        "creation_template": "create_template",
+        "image_gen_template": "image_gen_template",
+        "instagram_caption_template": "caption_template"
+    })()
+
+    run(fake_cfg)

@@ -1,0 +1,8 @@
+defaults:  # This will "load" everything in the default.yaml, then overwrite with the specific values below
+  - default
+  - _self_
+
+name: AntonIA_cat
+language: catalan
+hashtags: "#bondia #alegria #amor"
+watermark_path: ./assets/antonIA_cat_watermark.png

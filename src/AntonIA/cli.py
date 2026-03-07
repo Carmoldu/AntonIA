@@ -1,37 +1,15 @@
 # src/AntonIA/cli.py
-import argparse
-import logging
-from AntonIA.pipeline import main as run_pipeline
+"""Thin wrapper that exposes the Hydra-backed pipeline entrypoint.
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="AntonIA - Morning image and caption generator ☕🐓"
-    )
+Hydra already provides a rich CLI for selecting configurations, so there is no
+need to maintain custom argparse logic here.  Users can simply invoke
+``python -m AntonIA.cli`` or ``python -m AntonIA.pipeline`` directly.
+"""
 
-    parser.add_argument(
-        "--persona",
-        type=str,
-        default="default",
-        help="Name of the persona configuration to use (without .yaml extension)",
-    )
+from AntonIA.pipeline import main
 
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        action="store_true",
-        help="Enable debug logging output",
-    )
-
-    args = parser.parse_args()
-
-    # Configure logging
-    logging.basicConfig(
-        level=logging.DEBUG if args.verbose else logging.INFO,
-        format="[%(asctime)s] %(levelname)s - %(message)s",
-    )
-
-    # Run the pipeline
-    run_pipeline(persona=args.persona, config_dir=args.config_dir)
+# the function imported above is decorated with ``@hydra.main``; invoking it
+# will launch the Hydra CLI.
 
 if __name__ == "__main__":
     main()

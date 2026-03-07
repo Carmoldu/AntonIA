@@ -1,0 +1,10 @@
+defaults:
+  - base_config
+  - llm: gpt-4.1
+  - image: gpt-image-1-mini
+  - grandma: antonIA_cat
+  - _self_
+
+database:
+  past_records_path: ./outputs/database
+  past_records_to_retrieve: 10

@@ -14,9 +14,9 @@ def config_dir(tmp_path):
     config_path.mkdir()
     personas_path.mkdir()
 
-    # Create base.yaml
+    # Create base.yaml (Hydra will merge this with persona files via config.yaml)
     base_yaml = {
-        "LLM": {
+        "llm": {
             "model": "test-llm-model",
             "temperature": 0.5,
             "api_key": "base-api-key"
@@ -33,6 +33,18 @@ def config_dir(tmp_path):
     }
     with open(config_path / "base.yaml", "w", encoding="utf-8") as f:
         yaml.safe_dump(base_yaml, f)
+    # Hydra top‑level config file to combine base and persona groups
+    config_yaml = """
+defaults:
+  - base
+  - personas: default
+
+hydra:
+  run:
+    dir: .
+"""
+    with open(config_path / "config.yaml", "w", encoding="utf-8") as f:
+        f.write(config_yaml)
 
     # Create default persona
     default_persona_yaml = {
@@ -116,7 +128,8 @@ def test_missing_api_key_raises(config_dir, monkeypatch):
     monkeypatch.delenv(config.ENV_OPENAI_API_KEY, raising=False)
     base_path = Path(config_dir) / "base.yaml"
     base_yaml = yaml.safe_load(base_path.read_text())
-    base_yaml["LLM"].pop("api_key", None)
+    # config now uses lowercase keys
+    base_yaml["llm"].pop("api_key", None)
     with open(base_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(base_yaml, f)
     with pytest.raises(config.ConfigError):
