@@ -1,3 +1,2 @@
 api_key: ${oc.env:OPENAI_API_KEY}
 model: gpt-image-1-mini
-storage_path: ./outputs/images

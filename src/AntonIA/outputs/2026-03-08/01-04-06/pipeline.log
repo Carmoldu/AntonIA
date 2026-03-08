@@ -1,0 +1,34 @@
+[2026-03-08 01:04:06,515][AntonIA.phrase_generator][INFO] - Retrieving past 10 days outputs from database table 'AntonIA_cat_runs'...
+[2026-03-08 01:04:07,597][AntonIA.llm_client][INFO] - Querying LLM...
+[2026-03-08 01:04:07,598][AntonIA.llm_client][INFO] - LLM response: {"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}
+[2026-03-08 01:04:07,598][AntonIA.phrase_generator][INFO] - Parsing response ...
+[2026-03-08 01:04:07,598][AntonIA.phrase_generator][INFO] - Image generation prompt: Create a high-quality image of nice sunset.
+Use a aquarela visual style.
+
+Add the catalan phrase "Good Morning" clearly and prominently in the scene.
+Use comic sans making it readable, and well-integrated into the composition.
+Ensure the text blends artistically with the background while remaining fully legible.
+
+Generate the image in a square format, optimized for social media sharing, with rich detail and smooth rendering.
+Avoid watermarks, text errors, or visual artifacts.
+
+Leave space for a watermark that will be added later in the bottom right corner.
+[2026-03-08 01:04:07,599][AntonIA.instagram_caption_generator][INFO] - Generating Instagram caption...
+[2026-03-08 01:04:07,600][AntonIA.llm_client][INFO] - Querying LLM...
+[2026-03-08 01:04:07,600][AntonIA.llm_client][INFO] - LLM response: {"phrase": "Good Morning", "topic": "Nice sunset", "style": "Aquarela", "font": "Comic Sans"}
+[2026-03-08 01:04:07,601][AntonIA.image_generator][INFO] - Starting image generation process...
+[2026-03-08 01:04:07,601][AntonIA.image_generation_client][INFO] - Mock image generation for prompt: 'Create a high-quality image of nice sunset.
+Use a aquarela visual style.
+
+Add the catalan phrase "Good Morning" clearly and prominently in the scene.
+Use comic sans making it readable, and well-integrated into the composition.
+Ensure the text blends artistically with the background while remaining fully legible.
+
+Generate the image in a square format, optimized for social media sharing, with rich detail and smooth rendering.
+Avoid watermarks, text errors, or visual artifacts.
+
+Leave space for a watermark that will be added later in the bottom right corner.'
+[2026-03-08 01:04:07,601][AntonIA.image_generator][INFO] - Image generated successfully
+[2026-03-08 01:04:07,602][AntonIA.image_saver][INFO] - Saving image...
+[2026-03-08 01:04:07,602][AntonIA.mock_storage_client][INFO] - Mock save file '20260308_010407_b4d63041.png' to destination ''
+[2026-03-08 01:04:07,603][AntonIA.run_info_saver][INFO] - Saving run information to the database...

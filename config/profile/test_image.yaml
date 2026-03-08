@@ -1,0 +1,4 @@
+llm: mock
+image: open_ai
+storage: mock
+database: mock

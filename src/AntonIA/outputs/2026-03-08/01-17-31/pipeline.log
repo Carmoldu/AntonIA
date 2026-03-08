@@ -1,0 +1,55 @@
+[2026-03-08 01:17:32,245][AntonIA.phrase_generator][INFO] - Retrieving past 10 days outputs from database table 'AntonIA_cast_runs'...
+[2026-03-08 01:17:32,314][AntonIA.database_client][WARNING] - Table 'AntonIA_cast_runs' does not exist.
+[2026-03-08 01:17:32,318][AntonIA.llm_client][INFO] - Querying LLM...
+[2026-03-08 01:19:58,371][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-03-08 01:19:58,379][AntonIA.llm_client][INFO] - LLM response: {
+  "phrase": "¡Feliz domingo, corazones! Que hoy les lluevan risas y abrazos como confeti.",
+  "topic": "A cozy cartoon living room full of smiling family members, all ages, wearing colorful pajamas, sitting in a circle on a fluffy rug and tossing pastel-colored confetti in the air, a window showing gentle sunlight outside.",
+  "style": "Charming digital illustration with soft textures, rounded shapes, and a warm color palette that fills the scene with tenderness and joyful morning energy.",
+  "font": "Chunky, playful bubble letters with subtle sparkles and soft shadows, radiating cheerfulness."
+}
+[2026-03-08 01:19:58,394][AntonIA.phrase_generator][INFO] - Parsing response ...
+[2026-03-08 01:19:58,394][AntonIA.phrase_generator][INFO] - Image generation prompt: Create a high-quality image of a cozy cartoon living room full of smiling family members, all ages, wearing colorful pajamas, sitting in a circle on a fluffy rug and tossing pastel-colored confetti in the air, a window showing gentle sunlight outside..
+Use a charming digital illustration with soft textures, rounded shapes, and a warm color palette that fills the scene with tenderness and joyful morning energy. visual style.
+
+Add the spanish phrase "¡Feliz domingo, corazones! Que hoy les lluevan risas y abrazos como confeti." clearly and prominently in the scene.
+Use chunky, playful bubble letters with subtle sparkles and soft shadows, radiating cheerfulness. making it readable, and well-integrated into the composition.
+Ensure the text blends artistically with the background while remaining fully legible.
+
+Generate the image in a square format, optimized for social media sharing, with rich detail and smooth rendering.
+Avoid watermarks, text errors, or visual artifacts.
+
+Leave space for a watermark that will be added later in the bottom right corner.
+[2026-03-08 01:19:58,396][AntonIA.instagram_caption_generator][INFO] - Generating Instagram caption...
+[2026-03-08 01:19:58,396][AntonIA.llm_client][INFO] - Querying LLM...
+[2026-03-08 01:20:00,881][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-03-08 01:20:00,915][AntonIA.image_generator][INFO] - Starting image generation process...
+[2026-03-08 01:20:00,915][AntonIA.image_generation_client][INFO] - Generating image...
+[2026-03-08 01:20:38,333][httpx][INFO] - HTTP Request: POST https://api.openai.com/v1/images/generations "HTTP/1.1 200 OK"
+[2026-03-08 01:20:38,484][AntonIA.image_generator][INFO] - Image generated successfully
+[2026-03-08 01:20:38,485][AntonIA.image_saver][INFO] - Saving image...
+[2026-03-08 01:20:38,486][AntonIA.azure_storage_client][INFO] - Uploading blob to 'outputs/images/20260308_012038_58f7e751.png'
+[2026-03-08 01:20:38,610][azure.core.pipeline.policies.http_logging_policy][INFO] - Request URL: 'https://stantonia.blob.core.windows.net/generated_images/outputs/images/20260308_012038_58f7e751.png'
+Request method: 'PUT'
+Request headers:
+    'Content-Length': '2082091'
+    'x-ms-blob-type': 'REDACTED'
+    'x-ms-blob-content-type': 'REDACTED'
+    'x-ms-version': 'REDACTED'
+    'Content-Type': 'application/octet-stream'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': 'a24c36c4-1a84-11f1-a5b6-ac198e5b41d0'
+    'Authorization': 'REDACTED'
+A body is sent with the request
+[2026-03-08 01:20:38,994][azure.core.pipeline.policies.http_logging_policy][INFO] - Response status: 400
+Response headers:
+    'Content-Length': '243'
+    'Content-Type': 'application/xml'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'f4d31e20-d01e-0023-7c91-aeb28a000000'
+    'x-ms-client-request-id': 'a24c36c4-1a84-11f1-a5b6-ac198e5b41d0'
+    'x-ms-version': 'REDACTED'
+    'x-ms-error-code': 'InvalidResourceName'
+    'Date': 'Sun, 08 Mar 2026 00:20:35 GMT'

@@ -1,5 +1,3 @@
-import os
-
 from dotenv import load_dotenv
 load_dotenv()   # IMPORTANT: load .env at the very beginning so env vars are available for config loading
 

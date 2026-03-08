@@ -1,0 +1,4 @@
+llm: mock
+image: mock
+storage: local
+database: mock

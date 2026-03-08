@@ -58,6 +58,7 @@ class ImageConfig:
     open_ai: OpenAIImageConfig
     size: str = "1024x1024"
     type: str = "mock"
+    storage_path: str = "./outputs/images"
 
 # Note ImageConfig does not have a Mock because the mock image client does not require 
 # any configuration, but we could easily add one if needed in the future
@@ -66,7 +67,6 @@ class ImageConfig:
 class OpenAIImageConfig:
     api_key: str = ""
     model: str = "gpt-image-1-mini"
-    storage_path: str = "./outputs/images"
 
 
 @dataclass
@@ -108,12 +108,20 @@ class LocalStorageConfig:
 
 
 @dataclass
+class ProfileConfig:
+    llm: str = "mock"
+    image: str = "mock"
+    storage: str = "mock"
+    database: str = "mock"
+
+@dataclass
 class Config:
     grandma: GrandmaConfig
     llm: LLMConfig
     image: ImageConfig
     storage: StorageConfig
     database: DatabaseConfig
+    profile: ProfileConfig
     past_records_to_retrieve: int = 10
 
 

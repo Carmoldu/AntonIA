@@ -20,21 +20,23 @@ defaults:
   # any configuration, but we could easily add one if needed in the future
 
   - grandma: antonIA_cat
+  - profile: all_mock
   - _self_
 
 
 llm:
-  type: mock
+  type: ${profile.llm}
   temperature: ${llm.${llm.type}.temperature}  # This will take the temperature from the desired llm and parse it here
 
 image:
-  type: mock
+  type: ${profile.image}
   size: 1024x1024
+  storage_path: ./outputs/images
 
 storage:
-  type: mock
+  type: ${profile.storage}
 
 database:
-  type: mock
+  type: ${profile.database}
 
 past_records_to_retrieve: 10

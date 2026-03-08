@@ -1,0 +1,5 @@
+llm: open_ai
+image: open_ai
+storage: azure
+database: local
+

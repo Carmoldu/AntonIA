@@ -1,0 +1,4 @@
+llm: open_ai
+image: open_ai
+storage: local
+database: local
