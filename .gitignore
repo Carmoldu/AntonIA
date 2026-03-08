@@ -24,3 +24,4 @@ infra/crash.log
 infra/.terraform*
 
 outputs/*
+src/AntonIA/outputs/*
