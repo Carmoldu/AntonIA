@@ -26,7 +26,6 @@ defaults:
 
 llm:
   type: ${profile.llm}
-  temperature: ${llm.${llm.type}.temperature}  # This will take the temperature from the desired llm and parse it here
 
 image:
   type: ${profile.image}

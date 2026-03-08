@@ -3,6 +3,8 @@ language: catalan
 hashtags: "#bondia #alegria #amor"
 watermark_path: ./assets/antonIA_cat_watermark.png
 runs_table_name: "${grandma.name}_runs"
+temperature_for_image_prompt_generation: 0.8
+temperature_for_caption_generation: 0.8
   
 prompts:
   system: |

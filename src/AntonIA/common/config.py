@@ -25,6 +25,8 @@ class GrandmaConfig:
     language: str = "catalan"
     hashtags: str = "#bondia #alegria #amor"
     watermark_path: Optional[str] = None
+    temperature_for_image_prompt_generation: float = 0.8
+    temperature_for_caption_generation: float = 0.8
 
 @dataclass
 class PromptsConfig:
@@ -39,7 +41,6 @@ class LLMConfig:
     open_ai: OpenAILLMConfig
     mock: MockLLMConfig
     type: str = "mock"
-    temperature: float = 0.0
 
 @dataclass
 class OpenAILLMConfig:

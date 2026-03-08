@@ -56,7 +56,7 @@ def run(cfg: Config):
         prompt_generateion_template=cfg.grandma.prompts.creation_template,
         image_prompt_template=cfg.grandma.prompts.image_template,
         past_records=past_records, 
-        temperature=cfg.llm.temperature,
+        temperature=cfg.grandma.temperature_for_image_prompt_generation,
         language=cfg.grandma.language,
         )
     
@@ -66,7 +66,7 @@ def run(cfg: Config):
         phrase=response_details["phrase"], 
         topic=response_details["topic"], 
         style=response_details["style"], 
-        temperature=cfg.llm.temperature,
+        temperature=cfg.grandma.temperature_for_caption_generation,
         language=cfg.grandma.language,
         hashtags=cfg.grandma.hashtags,
     )
