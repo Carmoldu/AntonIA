@@ -27,6 +27,7 @@ class GrandmaConfig:
     watermark_path: Optional[str] = None
     temperature_for_image_prompt_generation: float = 0.8
     temperature_for_caption_generation: float = 0.8
+    publishers: Optional[list[PublisherConfig]] = None
 
 @dataclass
 class PromptsConfig:
@@ -34,6 +35,22 @@ class PromptsConfig:
     creation_template: str
     image_template: str
     instagram_caption_template: str
+
+
+@dataclass
+class PublisherConfig:
+    type: str
+    instagram: Optional[InstagramPublisherConfig] = None
+    whatsapp: Optional[None] = None  # Placeholder for future WhatsApp config
+
+
+@dataclass
+class InstagramPublisherConfig:
+    access_token: str
+    instagram_account_id: str
+    base_image_url: str
+
+
 
 
 @dataclass
@@ -98,6 +115,7 @@ class StorageConfig:
 @dataclass
 class AzureStorageConfig:
     type: str = "local"
+    url: str = ""
     base_dir: str | None = None
     connection_string: str | None = None
     container_name: str | None = None

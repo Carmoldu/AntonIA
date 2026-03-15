@@ -96,6 +96,18 @@ def run(cfg: Config):
         cfg.grandma.runs_table_name, 
         run_info,
         )
+    
+    # Publish to configured publishers
+    if cfg.grandma.publishers:
+        for pub_cfg in cfg.grandma.publishers:
+            publisher_client = factory.create_publisher_client(pub_cfg)
+            success = publisher_client.publish(saved_image_path, caption)
+            if success:
+                logger.info(f"Successfully published to {pub_cfg.type}")
+            else:
+                logger.error(f"Failed to publish to {pub_cfg.type}")
+
+    
 
 
 @hydra.main(config_path="../../config", config_name="config", version_base=None)

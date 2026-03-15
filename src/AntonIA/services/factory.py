@@ -23,6 +23,7 @@ from AntonIA.services import (
     MockStorageClient,
     LocalFileDatabaseClient,
     MockDatabaseClient,
+    InstagramPublisher,
 )
 
 
@@ -76,6 +77,7 @@ def create_storage_client(storage_cfg: cfg_module.StorageConfig):
     elif storage_cfg.type == "azure":
         return AzureBlobStorageClient(
             connection_string=storage_cfg.azure.connection_string,
+            url=storage_cfg.azure.url,
             container_name=storage_cfg.azure.container_name ,
             base_dir=storage_cfg.azure.base_dir,
         )
@@ -94,3 +96,17 @@ def create_database_client(db_cfg: cfg_module.DatabaseConfig):
         return MockDatabaseClient()
     else:
         raise ValueError(f"Unknown database client type '{db_cfg.type}'")
+
+
+def create_publisher_client(pub_cfg: cfg_module.PublisherConfig):
+    if pub_cfg.type == "instagram":
+        return InstagramPublisher(
+            access_token=pub_cfg.instagram.access_token, 
+            instagram_account_id=str(pub_cfg.instagram.instagram_account_id),
+            base_image_url=pub_cfg.instagram.base_image_url
+        )
+    elif pub_cfg.type == "whatsapp":
+        # Placeholder for future WhatsAppPublisher implementation
+        raise NotImplementedError("WhatsApp publisher client is not implemented yet.")
+    else:
+        raise ValueError(f"Unknown publisher client type '{pub_cfg.type}'")

@@ -1,4 +1,5 @@
 # connection_string and container_name can come from envs if not set here
 connection_string: ${oc.env:AZURE_STORAGE_CONNECTION_STRING}
+url: ${oc.env:AZURE_STORAGE_URL}
 container_name: generated-images
 base_dir: ${...image.storage_path}
