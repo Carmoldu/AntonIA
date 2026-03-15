@@ -14,13 +14,18 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  allow_nested_items_to_be_public = false
+  # We have to allow nested items to be public, as the container
+  # for the generated images will need to be accessed by the 
+  # instagram publisher to retrieve the images and publish them.
+  allow_nested_items_to_be_public = true
 }
 
 
-# ----- Private container for images -----
+# ----- Public container for images -----
+# The container has to provide public read access to blobs for the
+# instagram publisher to be able to retrieve them and publish them.
 resource "azurerm_storage_container" "images" {
   name                  = "generated-images"
   storage_account_name  = azurerm_storage_account.storage.name
-  container_access_type = "private"
+  container_access_type = "blob"
 }
