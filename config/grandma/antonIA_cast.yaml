@@ -6,3 +6,10 @@ name: AntonIA_cast
 language: spanish
 hashtags: "#buenosdías #alegría #amor"
 watermark_path: ./assets/antonIA_cast_watermark.png
+
+publishers:
+  - type: instagram
+    config:
+      access_token: ${oc.env:ANTONIA_META_APP_TOKEN}
+      instagram_account_id: ${oc.env:ANTONIA_BUENOS_DIAS_INSTAGRAM_ID}
+      base_image_url: ""

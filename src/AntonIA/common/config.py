@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Optional, Any, Union
 
 from hydra.core.config_store import ConfigStore
 
@@ -40,8 +40,7 @@ class PromptsConfig:
 @dataclass
 class PublisherConfig:
     type: str
-    instagram: Optional[InstagramPublisherConfig] = None
-    whatsapp: Optional[None] = None  # Placeholder for future WhatsApp config
+    config: dict
 
 
 @dataclass
@@ -49,6 +48,12 @@ class InstagramPublisherConfig:
     access_token: str
     instagram_account_id: str
     base_image_url: str
+
+
+@dataclass
+class WhatsAppPublisherConfig:
+    access_token: str
+    phone_number_id: str
 
 
 

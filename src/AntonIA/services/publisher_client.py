@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
-from importlib.metadata import files
 from typing import Optional
 import requests
 import time
+from logging import getLogger
 
+
+
+logger = getLogger("AntonIA.publisher")
 
 class PublisherClient(ABC):
     """
@@ -50,6 +53,18 @@ class InstagramPublisher(PublisherClient):
         self.base_image_url = base_image_url
         self.base_url = "https://graph.facebook.com/v18.0"
 
+    def _full_image_url(self, image_path: str) -> str:
+        """
+        Construct the full URL for the image based on the base_image_url and the provided image_path.
+
+        Args:
+            image_path (str): The relative path to the image.
+
+        Returns:
+            str: The full URL for the image.
+        """
+        return f"{self.base_image_url}/{image_path}" if self.base_image_url else image_path
+
     def publish(self, image_path: str, caption: Optional[str] = None, **kwargs) -> bool:
         """
         Publish an image to Instagram.
@@ -64,11 +79,13 @@ class InstagramPublisher(PublisherClient):
         """
         # Step 1: Upload the image
         create_url  = f"{self.base_url}/{self.instagram_account_id}/media"
+
+        logger.info(f"Uploading image to Instagram (id: {self.instagram_account_id}): {self.base_image_url}/{image_path} with caption: {caption}")
         headers = {
             "Authorization": f"Bearer {self.access_token}"
         }
         payload = {
-            "image_url": f"{self.base_image_url}/{image_path}",
+            "image_url": self._full_image_url(image_path),
             "caption": caption
         }
 

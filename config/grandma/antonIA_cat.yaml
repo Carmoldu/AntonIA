@@ -9,7 +9,7 @@ watermark_path: ./assets/antonIA_cat_watermark.png
 
 publishers:
   - type: instagram
-    instagram:
-      access_token: ${oc.env:INSTAGRAM_TOKEN}
-      instagram_account_id: ${oc.env:ANTONIA_BON_DIA_INSTAGRAM_API_ID}
-      base_image_url: ${storage.azure.url}/${storage.azure.container_name}/${storage.azure.base_dir}/
+    config:
+      access_token: ${oc.env:ANTONIA_META_APP_TOKEN}
+      instagram_account_id: ${oc.env:ANTONIA_BON_DIA_INSTAGRAM_ID}
+      base_image_url: ""

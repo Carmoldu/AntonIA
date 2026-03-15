@@ -14,21 +14,27 @@ from typing import Optional
 
 from AntonIA.common import config as cfg_module
 from AntonIA.services import (
+    LLMClient,
     MockAIClient,
     OpenAIClient,
+    ImageGenerationClient,
     MockImageGenerationClient,
     OpenAIimageGenerationClient,
+    StorageClient,
     LocalStorageClient,
     AzureBlobStorageClient,
     MockStorageClient,
+    DatabaseClient,
     LocalFileDatabaseClient,
     MockDatabaseClient,
+    PublisherClient,
     InstagramPublisher,
+    WhatsAppPublisher
 )
 
 
 # ---- llm ---------------------------------------------------------------
-def create_llm_client(llm_cfg: cfg_module.LLMConfig, *, system_prompt: str = ""):
+def create_llm_client(llm_cfg: cfg_module.LLMConfig, *, system_prompt: str = "") -> LLMClient:
     """Return an LLM client based on configuration.
 
     Parameters
@@ -57,7 +63,7 @@ def create_llm_client(llm_cfg: cfg_module.LLMConfig, *, system_prompt: str = "")
 
 
 # ---- image generation -------------------------------------------------
-def create_image_client(img_cfg: cfg_module.ImageConfig):
+def create_image_client(img_cfg: cfg_module.ImageConfig) -> ImageGenerationClient:
     if img_cfg.type == "open_ai":
         return OpenAIimageGenerationClient(
             api_key=img_cfg.open_ai.api_key, 
@@ -70,14 +76,13 @@ def create_image_client(img_cfg: cfg_module.ImageConfig):
 
 
 # ---- storage -----------------------------------------------------------
-def create_storage_client(storage_cfg: cfg_module.StorageConfig):
+def create_storage_client(storage_cfg: cfg_module.StorageConfig) -> StorageClient:
     """Instantiate a storage client according to configuration."""
     if storage_cfg.type == "local":
         return LocalStorageClient(base_dir=storage_cfg.local.base_dir)
     elif storage_cfg.type == "azure":
         return AzureBlobStorageClient(
             connection_string=storage_cfg.azure.connection_string,
-            url=storage_cfg.azure.url,
             container_name=storage_cfg.azure.container_name ,
             base_dir=storage_cfg.azure.base_dir,
         )
@@ -88,7 +93,7 @@ def create_storage_client(storage_cfg: cfg_module.StorageConfig):
 
 
 # ---- database ----------------------------------------------------------
-def create_database_client(db_cfg: cfg_module.DatabaseConfig):
+def create_database_client(db_cfg: cfg_module.DatabaseConfig) -> DatabaseClient:
     if db_cfg.type == "local":
         # expects a path to directory where parquet tables are stored
         return LocalFileDatabaseClient(db_path=db_cfg.local.past_records_path)
@@ -98,15 +103,19 @@ def create_database_client(db_cfg: cfg_module.DatabaseConfig):
         raise ValueError(f"Unknown database client type '{db_cfg.type}'")
 
 
-def create_publisher_client(pub_cfg: cfg_module.PublisherConfig):
+def create_publisher_client(pub_cfg: cfg_module.PublisherConfig) -> PublisherClient:
     if pub_cfg.type == "instagram":
+        cfg = cfg_module.InstagramPublisherConfig(**pub_cfg.config)
         return InstagramPublisher(
-            access_token=pub_cfg.instagram.access_token, 
-            instagram_account_id=str(pub_cfg.instagram.instagram_account_id),
-            base_image_url=pub_cfg.instagram.base_image_url
+            access_token=cfg.access_token, 
+            instagram_account_id=str(cfg.instagram_account_id),
+            base_image_url=cfg.base_image_url
         )
     elif pub_cfg.type == "whatsapp":
-        # Placeholder for future WhatsAppPublisher implementation
-        raise NotImplementedError("WhatsApp publisher client is not implemented yet.")
+        cfg = cfg_module.WhatsAppPublisherConfig(**pub_cfg.config)
+        return WhatsAppPublisher(
+            access_token=cfg.access_token,
+            phone_number_id=cfg.phone_number_id
+        )
     else:
         raise ValueError(f"Unknown publisher client type '{pub_cfg.type}'")
